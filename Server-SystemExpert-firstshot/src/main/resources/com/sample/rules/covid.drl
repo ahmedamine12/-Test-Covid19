@@ -1,0 +1,307 @@
+//created on: 4 mars 2022
+package com.sample.rules
+import  ma.fstm.ilisi.projet.model.bo.*;
+import  ma.fstm.ilisi.projet.model.service.*;
+rule "rule_1"
+//salience 7
+salience 8
+no-loop true
+    when
+       d:Diagnostic(d.isDiagnostic("fievre"),
+       				  d.isDiagnostic("toux seche"),
+       				  d.isDiagnostic("fatigue"),
+       				  d.getTemperature()>38.0f,d.getPossi_presence()<0.6)
+    then
+        update(d){
+        	d.setPossi_presence(0.6);
+        	System.out.println(" 1- possibilité de presence de covid est "+d.getPossi_presence());
+        }
+end
+
+rule "rule_2"
+//salience 6
+salience 7
+no-loop true
+    when
+       d:Diagnostic(d.isDiagnostic("congestion nasal"),
+       				  d.getPossi_presence()==0.6,d.getPossi_presence()<0.7)
+    then
+        update(d){
+        	d.setPossi_presence(0.7);
+        	System.out.println("2-possibilité de presence de covid est "+d.getPossi_presence());
+        }
+end
+rule "rule_3"
+//salience 2
+salience 6
+no-loop true
+    when
+       d:Diagnostic(d.patient.getVille().getRegion().isEstHautRisque(),
+       				  d.getPossi_presence()>=0.7,d.getPossi_presence()<0.8)
+    then
+        update(d){
+        	d.setPossi_presence(0.8);
+        	System.out.println("possibilité de presence de covid est "+d.getPossi_presence());
+        }
+end
+
+rule "rule_4"
+salience 7
+//salience 2
+no-loop true
+    when
+       d:Diagnostic(d.isDiagnostic("maux de gorge"),
+       				  d.isDiagnostic("ecoulement nasal"),
+       				  d.getPossi_presence()>=0.7,d.getPossi_presence()<0.8)
+    then
+        update(d){
+        	d.setPossi_presence(0.8);
+        	System.out.println("possibilité de presence de covid est "+d.getPossi_presence());
+        }
+end
+
+rule "rule_5"
+//salience 5
+salience 3
+//no-loop true
+    when
+       d:Diagnostic(d.isDiagnostic("diarrhe"),
+       				  d.getPossi_presence()>=0.8,d.getPossi_presence()<0.9)
+    then
+       update(d){
+        	d.setPossi_presence(0.9);
+        	System.out.println("possibilité de presence de covid est "+d.getPossi_presence());
+        }
+end
+
+
+rule "rule_6"
+salience 3
+no-loop true
+    when
+       d:Diagnostic(d.isDiagnostic("dyspnee"),
+       				  d.getPossi_presence()>=0.6,d.getPossi_presence()<0.95)
+    then
+    update(d){
+        	d.setPossi_presence(0.95f);
+        	System.out.println("possibilité de presence de covid est "+d.getPossi_presence());
+        }
+end
+
+
+rule "rule_7"
+salience 1
+no-loop true
+    when
+       d:Diagnostic(d.getPossi_presence()>0.8)
+    then
+        	
+        //SendEmail1 email= new SendEmail1(d);
+        	//email.EnvoiEmail("kamassafi19@gmail.com");
+        	d.sendEmail();
+           	System.out.println("cette diagnostique est dangereuse 7\n");
+        
+end
+
+rule "rule_8"
+salience 1
+    when
+       d:Diagnostic(d.getPossi_presence()>=0.6 , d.patient.getAge()>70)
+    then
+        
+        //SendEmail1 email= new SendEmail1(d);
+        	//email.EnvoiEmail("kamassafi19@gmail.com");
+        	d.sendEmail();
+           	System.out.println("cette diagnostique est dangereuse 8\n");
+        	
+end
+rule "rule_9"
+salience 1
+no-loop true
+    when
+       d:Diagnostic(d.getPossi_presence()>0.6 
+       ,(d.isMaladieCronique("Diabete") || d.isMaladieCronique("cardiaque")||d.isMaladieCronique("Hypertendu")))
+    then
+        //SendEmail1 email= new SendEmail1(d);
+        	//email.EnvoiEmail("kamassafi19@gmail.com");
+        	d.sendEmail();
+           	System.out.println("cette diagnostique est dangereuse 9\n");
+end
+
+
+rule "rule_10"
+//salience 5
+salience 6
+no-loop true
+  when
+       d:Diagnostic(d.isDiagnostic("frisson"), d.getPossi_presence()>=0.6,d.getPossi_presence()<0.8)
+    then
+       update(d){
+        	d.setPossi_presence(0.8);
+        	System.out.println(" frisson ,possibilité de presence de covid est "+d.getPossi_presence());
+        }
+end
+
+rule "rule_11"
+salience 6
+//salience 2
+no-loop true
+  when
+       d:Diagnostic(d.isDiagnostic("douleurs musculaires"),
+       				  d.getPossi_presence()>=0.6,d.getPossi_presence()<0.8)
+    then
+        update(d){
+        	d.setPossi_presence(0.8f);
+        	System.out.println("possibilité de presence de covid est"+d.getPossi_presence());
+        }
+end
+rule "rule_12"
+salience 6
+//salience 2
+no-loop true
+  when
+       d:Diagnostic(d.isDiagnostic("maux de tete"),
+       				  d.getPossi_presence()>=0.6,d.getPossi_presence()<0.8)
+    then
+        update(d){
+        	d.setPossi_presence(0.8);
+        	System.out.println("possibilité de presence de covid est"+d.getPossi_presence());
+        }
+end
+
+rule "rule_13"
+salience 6
+//salience 2
+no-loop true
+  when
+       d:Diagnostic(d.isDiagnostic("gorge seche"),
+       				  d.getPossi_presence()>=0.6,d.getPossi_presence()<0.8)
+    then
+        update(d){
+        	d.setPossi_presence(0.8);
+        	System.out.println("possibilité de presence de covid est"+d.getPossi_presence());
+        }
+end
+
+rule "rule_14"
+salience 6
+//salience 2
+no-loop true
+  when
+       d:Diagnostic(d.getPossi_presence()>=0.6,
+       				  (d.isDiagnostic("perte de gout") || d.isDiagnostic("perte de l'odorat")),d.getPossi_presence()<0.8)
+       				  
+    then
+        update(d){
+        	d.setPossi_presence(0.8f);
+        	System.out.println("possibilité de presence de covid est"+d.getPossi_presence());
+        }
+end
+
+rule "rule_15"
+//salience 4
+salience 5
+no-loop true
+    when
+       d:Diagnostic(d.isDiagnostic("essouflement"),
+       				  d.getPossi_presence()>=0.6,d.getPossi_presence()<0.85)
+    then
+       update(d){
+        	d.setPossi_presence(0.85);
+        	System.out.println(" essoulement ,possibilité de presence de covid est "+d.getPossi_presence());
+        }
+end
+
+rule "rule_16"
+salience 8
+//salience 3
+no-loop true
+    when
+       d:Diagnostic((d.isDiagnostic("chute") || d.isDiagnostic("confusion")),
+       				  d.patient.getAge()>70,d.getPossi_presence()<0.6)
+    then
+        update(d){
+        	d.setPossi_presence(0.6);
+        	System.out.println("possibilité de presence de covid est "+d.getPossi_presence());
+        }
+end
+
+rule "rule_17"
+lock-on-active
+salience 8
+//salience 3
+no-loop true
+    when
+       d:Diagnostic(d.isDiagnostic("diarrhe"),
+       				  d.patient.getAge>70,d.getPossi_presence()<0.6)
+    then
+        update(d){
+        	d.setPossi_presence(0.6);
+        	System.out.println("diarrhe possibilité de presence de covid est "+d.getPossi_presence());
+        }
+end
+
+rule "rule_18"
+lock-on-active
+salience 6
+//salience 2
+no-loop true
+    when
+       d:Diagnostic((d.isDiagnostic("nausee") || d.isDiagnostic("vomissement")),
+       				  d.getPossi_presence()>=0.6,d.getPossi_presence()<0.8)
+    then
+        update(d){
+        	d.setPossi_presence(0.8);
+        	System.out.println("possibilité de presence de covid est "+d.getPossi_presence());
+        }
+end
+
+
+rule "rule_19"
+lock-on-active
+salience 4
+//salience 2
+no-loop true
+    when
+       d:Diagnostic(d.isDiagnostic("contact covid") ,
+       				  d.getPossi_presence()>=0.6,d.getPossi_presence()<0.9)
+    then
+       update(d){
+        	d.setPossi_presence(0.9);
+        	System.out.println("possibilité de presence de covid est "+d.getPossi_presence());
+        }
+end
+
+rule "rule_20"
+lock-on-active
+salience 6
+//salience 2
+no-loop true
+    when
+       d:Diagnostic(d.isDiagnostic("conjonctivite") ,
+       				  d.getPossi_presence()>=0.6,d.getPossi_presence()<0.8)
+    then
+        update(d){
+        	d.setPossi_presence(0.8);
+        	System.out.println("possibilité de presence de covid est "+d.getPossi_presence());
+        }
+end
+
+
+rule "rule_21"
+lock-on-active
+salience 6
+//salience 2
+no-loop true
+    when
+       d:Diagnostic(d.isDiagnostic("tremblement repete") ,
+       				  d.getPossi_presence()>=0.6,d.getPossi_presence()<0.8)
+    then
+        update(d){
+        	d.setPossi_presence(0.8);
+        	System.out.println("possibilité de presence de covid est "+d.getPossi_presence());
+       }
+end
+
+
+
